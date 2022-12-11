@@ -35,7 +35,9 @@ jobs:
           context: .
           file: ./python.Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/python.docker:latest
+          tags: |
+            ${{ secrets.DOCKER_HUB_USERNAME }}/python.docker:latest
+            ghcr.io/${{ github.actor }}/python.docker:${{  github.ref_name }}
 
   slack:
     name: Slack Notification
