@@ -6,6 +6,8 @@ on:
       - "v*.*"
 jobs:
   build:
+    env:
+      GIT_REGISRTY_NAME_IN_LOWER_CASE: "andreibaitau"
     runs-on: ubuntu-latest
     steps:
       -
@@ -36,8 +38,8 @@ jobs:
           file: ./python.Dockerfile
           push: true
           tags: |
-            ${{ secrets.DOCKER_HUB_USERNAME }}/python.docker:latest
-            ghcr.io/andreibaitau/python.docker:${{github.ref_name}}
+            ${{ secrets.DOCKER_HUB_USERNAME }}/python.docker:${{github.ref_name}}
+            ghcr.io/${{GIT_REGISRTY_NAME_IN_LOWER_CASE}}/python.docker:${{github.ref_name}}
   slack:
     name: Slack Notification
     runs-on: ubuntu-latest
