@@ -37,7 +37,7 @@ jobs:
           push: true
           tags: |
             ${{ secrets.DOCKER_HUB_USERNAME }}/python.docker:latest
-            ghcr.io/${{ github.actor }}/python.docker:latest
+            ghcr.io/${{ github.actor }}/docker.action:${{github.ref_name}}
   slack:
     name: Slack Notification
     runs-on: ubuntu-latest
