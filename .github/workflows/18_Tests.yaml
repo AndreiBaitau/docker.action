@@ -5,13 +5,13 @@ on:
     branches:
       - "main"
 
-env:
-   image_name: "python-docker" 
-   result_file: result.log 
 
 jobs:
   docker:
     runs-on: ubuntu-latest
+    env:
+      image_name: "python-docker"
+      result_file: result.log
     outputs:
       out-job-status: ${{ job.status }}
     steps:
