@@ -44,7 +44,7 @@ jobs:
   
       - name: Curl check
         run: |
-          echo " Curl:\n"  >> ${{ env.result_file }}
+          echo "\nCurl: \n "  >> ${{ env.result_file }}
           curl http://172.17.0.3:5000 >> ${{ env.result_file }}
       
       - name: result
