@@ -25,8 +25,8 @@ jobs:
       - name: Build Dokerimage
         run: |
           docker build -f python.Dockerfile . --network=host -t ${{ env.image_name }}:1.0.0
-          docker run --rm -p 8080:8080 --name hm  ${{ env.image_name }}:1.0.0
-          # docker run -d  -p 8080:8080 --name ${{ env.image_name }} -t ${{ env.image_name }}:1.0.0
+          #docker run --rm -p 8080:8080 --name hm  ${{ env.image_name }}:1.0.0
+          docker run -d  -p 8080:8080 --name ${{ env.image_name }} -t ${{ env.image_name }}:1.0.0
           docker ps >> ${{ env.result_file }}
           sleep 5
        
