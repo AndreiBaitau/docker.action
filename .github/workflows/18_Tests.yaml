@@ -40,20 +40,13 @@ jobs:
         if: ${{ steps.user.outputs.user == 'root' }}
         run: echo "Image user is ${{ steps.user.outputs.user }} \n >> IT IS THE ROOT USER<<<" >> ${{ env.result_file }} 
      
-      - uses: actions/checkout@v2
-      - name: Run script file
-        id: check
+  
+      - name: Curl check
         run: |
-           chmod +x ./test.sh
-           echo "curl=$(./test.sh)" >> $GITHUB_OUTPUT
-        shell: bash    
-     
-      
-      - name: Curl check result
-        run: |
-           echo "Curl check:\n ${{ steps.check.outputs.curl }}" >> ${{ env.result_file }}
-        
- 
+          echo " Curl:\n"  >> ${{ env.result_file }}
+          curl http://172.17.0.2:5000 >> ${{ env.result_file }}
+
+
       - name: Login to GitHub Registry
         uses: docker/login-action@v2
         with:
