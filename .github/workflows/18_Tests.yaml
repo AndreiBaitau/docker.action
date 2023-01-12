@@ -48,8 +48,10 @@ jobs:
            echo "curl=$(./test.sh)" >> $GITHUB_OUTPUT
         shell: bash    
      
+      
       - name: Curl check result
-        run: echo "Curl check:\n: ${{ steps.check.outputs.curl}}" >> ${{ env.result_file }}
+        run: |
+           echo "Curl check:\n ${{ steps.check.outputs.curl }}" >> ${{ env.result_file }}
         
  
       - name: Login to GitHub Registry
