@@ -2,7 +2,7 @@ FROM python:3.8-alpine
 
 
 ARG IMAGE_USER=andrei
-RUN adduser --no-create-home -u andreibaitau -D IMAGE_USER
+RUN adduser --no-create-home -u 1000 -D IMAGE_USER
 
 
 RUN mkdir /app
@@ -11,7 +11,7 @@ WORKDIR /app
 
 RUN pip install -r requirements.txt
 
-USER andrei
+USER 1000
 
 
 EXPOSE 8080

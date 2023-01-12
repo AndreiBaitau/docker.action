@@ -89,6 +89,7 @@ jobs:
           name: ${{ env.result_file }}
   slack:
     name: Slack Notification
+    needs: docker
     runs-on: ubuntu-latest
     steps:
     - name: Slack Notification
