@@ -46,11 +46,8 @@ jobs:
         run: |
           echo " Curl:\n"  >> ${{ env.result_file }}
           curl http://172.17.0.3:5000 >> ${{ env.result_file }}
-       
-      - name: Check out the repo
-        uses: actions/checkout@v3
       
-      - name: Artifact
+      - name: result
         uses: actions/upload-artifact@v2 
         with:
           path: ${{ env.result_file }}
