@@ -1,0 +1,102 @@
+name: Task 1
+
+on:
+  push:
+    branches:
+      - "main"
+
+env:
+   image_name: "python-docker" 
+   result_file: result.log 
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    outputs:
+      out-job-status: ${{ job.status }}
+    steps:
+       
+      - name: Checkout
+        uses: actions/checkout@v2
+       
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+     
+      - name: Build Dokerimage
+        run: |
+          docker build -f python.Dockerfile . --network=host -t ${{ env.image_name }}:1.0.0
+          docker run -d  -p 8080:8080 --name ${{ env.image_name }} -t ${{ env.image_name }}:1.0.0
+          docker ps >> ${{ env.result_file }}
+          sleep 5
+       
+      - name: Check for Doker user
+        id: user
+        run: |
+          echo -e "\nUser:"  >> ${{ env.result_file }}
+          docker exec ${{ env.image_name }} whoami >> ${{ env.result_file }}
+          echo "user=$(docker exec ${{ env.image_name }} whoami)" >> $GITHUB_OUTPUT
+      
+      - name: Warning if user is root
+        if: ${{ steps.user.outputs.user == 'root' }}
+        run: echo "Image user is ${{ steps.user.outputs.user }} \n >> IT IS THE ROOT USER<<<" >> ${{ env.result_file }} 
+     
+      - uses: actions/checkout@v2
+      - name: Run script file
+        id: check
+        run: |
+           chmod +x ./test.sh
+           echo "curl=$(./test.sh)" >> $GITHUB_OUTPUT
+        shell: bash    
+     
+      - name: Curl check result
+        run: echo "Curl check:\n: ${{ steps.check.outputs.curl}}" >> ${{ env.result_file }}
+        
+ 
+      - name: Login to GitHub Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.REGISTRY_TOKEN }}
+
+      
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+      
+      
+      - name: Build and push
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: ./python.Dockerfile
+          push: true
+          tags: |
+            ${{ secrets.DOCKER_HUB_USERNAME }}/python.docker:1.0.0
+            ghcr.io/andreibaitau/python.docker:1.0.0          
+
+       
+      - name: Check out the repo
+        uses: actions/checkout@v3
+      
+      - name: Artifact
+        uses: actions/upload-artifact@v2 
+        with:
+          name: ${{ env.result_file }}
+  slack:
+    name: Slack Notification
+    runs-on: ubuntu-latest
+    steps:
+    - name: Slack Notification
+      uses: rtCamp/action-slack-notify@v2
+      env:
+        SLACK_CHANNEL: git-test
+        SLACK_COLOR: ${{ job.status }}
+        SLACK_ICON: https://github.com/rtCamp.png?size=48
+        SLACK_MESSAGE: |-
+            "'python.docker' Image was pushed with version ${{  github.ref_name }}."
+        SLACK_TITLE: 'DOCKER'
+        SLACK_USERNAME: Andrei Baitov
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}    
