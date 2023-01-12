@@ -53,7 +53,7 @@ jobs:
       - name: Artifact
         uses: actions/upload-artifact@v2 
         with:
-          name: ${{ env.result_file }}
+          path: ${{ env.result_file }}
   slack:
     name: Slack Notification
     needs: docker
