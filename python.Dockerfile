@@ -1,6 +1,9 @@
 FROM python:3.8-alpine
 
-RUN useradd -m andrei
+
+ARG IMAGE_USER=andrei
+RUN adduser --no-create-home -u andreibaitau -D IMAGE_USER
+
 
 RUN mkdir /app
 ADD . /app
